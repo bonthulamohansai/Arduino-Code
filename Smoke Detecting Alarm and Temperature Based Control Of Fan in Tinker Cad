@@ -1,0 +1,78 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(5,6,7,8,9,10);
+int gas = A0;
+int temp = A1;
+int motor =2;
+int fan =11;
+int buzzer =4;
+
+void setup()
+{
+  pinMode(gas,INPUT);
+  pinMode(temp,INPUT);
+  pinMode(fan,OUTPUT);
+  pinMode(motor,OUTPUT);
+  pinMode(buzzer,OUTPUT);
+  Serial.begin(9600);
+  lcd.begin(16,2);
+}
+
+void loop()
+{
+  gas = analogRead(A0);
+  Serial.println(gas);
+  temp = analogRead(A1);
+  Serial.println(temp);
+  if (gas>200) 
+  {
+    digitalWrite(motor,HIGH);
+    digitalWrite(buzzer,HIGH);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("ALERT");
+    delay(1000);
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("MOTOR IS STOPPED");
+    delay(1000);
+  }
+  else 
+  {
+    digitalWrite(motor,LOW);
+    digitalWrite(buzzer,LOW);
+    lcd.clear(); 
+    lcd.setCursor(0,0); 
+    lcd.print("ALL CLEAR"); 
+    delay(1000); 
+    lcd.clear(); 
+    lcd.setCursor(0,1); 
+    lcd.print("MOTOR IS WORKING"); 
+    delay(1000);
+  }
+  if (temp<=20) 
+  {
+    analogWrite(11,temp*255/1024);
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("FAN SPEED LOW");
+    delay(1000);
+    
+  }
+  if (temp>=50 && temp<=160)
+  {
+    analogWrite(11,temp*255/1024);
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("FAN SPEED MEDIUM");
+    delay(1000);
+  }
+    if (temp>=160&& temp<=360) 
+    {
+    analogWrite(11,225);
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("FAN SPEED HIGH");
+    delay(1000);
+    }
+  delay(50);
+}
